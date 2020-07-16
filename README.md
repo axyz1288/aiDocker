@@ -7,7 +7,7 @@
 * python: 2.7 (default)
 ```
 
-## Ubuntu 18.04
+## Ubuntu 18.04 (master)
 ```  
 * opengl: 1.0  
 * cuda: 10.2  
