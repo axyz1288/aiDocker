@@ -1,6 +1,7 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
-
-ENV DEBIAN_FRONTEND=noninteractive
+#-------------------------------------------------------------------------------------------------------------
+# Copyright (c) NCKU aiRobots . All rights reserved.
+#-------------------------------------------------------------------------------------------------------------
+FROM nvcr.io/nvidia/l4t-base:r32.3.1
 
 # This Dockerfile adds a non-root 'vscode' user with sudo access. However, for Linux,
 # this user's GID/UID must match your local user UID/GID to avoid permission issues
@@ -11,21 +12,29 @@ ARG PASSWORD=aiRobots
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
     apt-utils 2>&1 \
-    build-essential \
     sudo \
     vim \
-    cmake \
-    g++ \
-    git \
-    wget \
     lsb-release \
     software-properties-common \
+    gcc \
+    g++ \
+    git \
     python3-pip \
-    python3-setuptools\
     python3-dev \
+    python3-setuptools \
+    # avoid pip setup error
+    python3-wheel \
+    pkg-config \
     ros-core \
+    # dependencies of pillow
+    libjpeg-dev \
+    zlib1g-dev \
+    # dependency of matplotlib 
+    libfreetype6-dev \
     && rm -rf /var/lib/apt/lists/*
     
 # Add user to group
@@ -36,23 +45,20 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && echo "${USERNAME}:${PASSWORD}" | chpasswd \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-# Must reinstall, in case /usr/bin/python3: No module named pip
-RUN pip3 install --upgrade pip --no-cache-dir \
+RUN pip3 install --upgrade pip --upgrade setuptools\ 
+    && python3 -m pip install --no-cache-dir \
+    wheel \
     numpy \
     pandas \
-    six==1.14.0 \
     matplotlib \
-    jupyterlab \
-    scikit-learn
+    pillow \
+    jupyterlab 
 
-EXPOSE 8888
-
-# Add Tini. Tini operates as a process subreaper for jupyter. This prevents
-# kernel crashes.
+# Install tini in order to avoid pid reap.
 ENV TINI_VERSION v0.18.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
-ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["jupyter", "notebook", "--ip=0.0.0.0"]
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-arm64 /usr/bin/tini-arm64
+RUN chmod +x /usr/bin/tini-arm64
 
 WORKDIR /home/${USERNAME}
+EXPOSE 8888
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--allow-root"]
