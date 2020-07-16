@@ -1,6 +1,4 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
-
-ENV DEBIAN_FRONTEND=noninteractive
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04
 
 # This Dockerfile adds a non-root 'vscode' user with sudo access. However, for Linux,
 # this user's GID/UID must match your local user UID/GID to avoid permission issues
@@ -22,9 +20,9 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     wget \
     lsb-release \
     software-properties-common \
-    python3-pip \
-    python3-setuptools\
-    python3-dev \
+    python-pip \
+    python-setuptools\
+    python-dev \
     ros-core \
     && rm -rf /var/lib/apt/lists/*
     
@@ -36,14 +34,13 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && echo "${USERNAME}:${PASSWORD}" | chpasswd \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-# Must reinstall, in case /usr/bin/python3: No module named pip
-RUN pip3 install --upgrade pip --no-cache-dir \
+RUN pip install --upgrade pip \ 
+    && python -m pip install --no-cache-dir \
     numpy \
     pandas \
     six==1.14.0 \
     matplotlib \
-    jupyterlab \
-    scikit-learn
+    jupyterlab
 
 EXPOSE 8888
 

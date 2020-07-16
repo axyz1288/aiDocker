@@ -2,7 +2,7 @@ version: '2.3'
 services:
   ros:
     build: ./ros
-    image: axyz1288/ros:melodic
+    image: axyz1288/ros:kinetic
     runtime: nvidia
     user: aiRobots
     container_name: ros
@@ -10,15 +10,14 @@ services:
       - ~/aiRobots/ros:/home/aiRobots
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /tmp/.docker.xauth:/tmp/.docker.xauth
-      - /dev:/dev
     environment: 
       - "DISPLAY=$DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
-
+    
   cpp:
     build: ./cpp
-    image: axyz1288/cpp:melodic
+    image: axyz1288/cpp:kinetic
     runtime: nvidia
     user: aiRobots
     depends_on:
@@ -33,68 +32,60 @@ services:
     environment:
       - "ROS_HOSTNAME=cpp"
       - "ROS_MASTER_URI=http://ros:11311"
-      - "DISPLAY=$DISPLAY"
-      - "QT_X11_NO_MITSHM=1"
-      - "XAUTHORITY=/tmp/.docker.xauth"
-
-  pybullet:
-    build: ./pybullet
-    image: axyz1288/pybullet
-    container_name: pybullet
-    user: aiRobots
-    runtime: nvidia
-    depends_on:
-      - ros
-    ports:
-      - "1000:8888"
-    volumes:
-      - ~/aiRobots/pybullet:/home/aiRobots
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
-    environment:
-      - "ROS_HOSTNAME=pybullet"
-      - "ROS_MASTER_URI=http://ros:11311"
-      - "DISPLAY=$DISPLAY"
+      - "DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
 
   base:
     build: ./python
-    image: axyz1288/python:3.6-cuda10.2
+    image: axyz1288/python:2.7-cuda10.1
     container_name: base
-
+    
   pytorch:
     build: 
       context: ./pytorch
       shm_size: '128gb'
-    image: axyz1288/pytorch:python3.6-cuda10.2
+    image: axyz1288/pytorch:python2.7-cuda10.1
     user: aiRobots
     runtime: nvidia
     depends_on:
       - base
     container_name: pytorch
     ports:
-      - "1010:8888"
-      - "1011:6006"
+      - "1000:8888"
+      - "1001:6006"
     volumes:
       - ~/aiRobots/pytorch:/home/aiRobots
     environment:
       - "ROS_HOSTNAME=pytorch"
       - "ROS_MASTER_URI=http://ros:11311"
 
+  horovod:
+    build: 
+      context: ./horovod
+      shm_size: '128gb'
+    network_mode: "host"
+    image: axyz1288/horovod:python2.7-cuda10.1
+    runtime: nvidia
+    depends_on:
+      - pytorch
+    container_name: horovod
+    volumes: 
+      - ~/aiRobots/horovod:/home/aiRobots
+  
   tensorflow:
     build: 
       context: ./tensorflow
       shm_size: '128gb'
-    image: axyz1288/tensorflow:python3.6-cuda10.2
+    image: axyz1288/tensorflow:python2.7-cuda10.1
     user: aiRobots
     runtime: nvidia
     depends_on:
       - base
     container_name: tensorflow
     ports:
-      - "1020:8888"
-      - "1021:6006"
+      - "1010:8888"
+      - "1011:6006"
     volumes:
       - ~/aiRobots/tensorflow:/home/aiRobots
     environment:

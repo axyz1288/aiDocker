@@ -1,4 +1,4 @@
-FROM axyz1288/ros:melodic
+FROM axyz1288/ros:kinetic
 
 # Install Xbox driver
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
@@ -17,6 +17,7 @@ RUN apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8
 # Install SDL
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
     libsdl2-2.0-0 \
+    libsdl2-dbg \
     libsdl2-dev \
     && rm -rf /var/lib/apt/lists/*
 

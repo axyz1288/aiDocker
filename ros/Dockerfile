@@ -1,4 +1,4 @@
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04
+FROM nvidia/opengl:1.1-glvnd-runtime-ubuntu16.04
 
 ARG USERNAME=aiRobots
 ARG PASSWORD=aiRobots
@@ -9,7 +9,7 @@ ARG USER_GID=$USER_UID
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-ENV ROS_DISTRO=melodic
+ENV ROS_DISTRO=kinetic
 
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
     apt-utils 2>&1 \
@@ -23,8 +23,6 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     cmake \
     git \
     build-essential \
-    dirmngr \
-    gpg-agent \
     dbus \
     && dbus-uuidgen >> /etc/machine-id \
     && rm -rf /var/lib/apt/lists/*
@@ -37,17 +35,15 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && echo "${USERNAME}:${PASSWORD}" | chpasswd \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F42ED6FBAB17C654
-
 #Install ros-full-desktop
 RUN add-apt-repository "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" \
     && apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 \
     && apt-get -y update && apt-get -y install --no-install-recommends \
     ros-${ROS_DISTRO}-desktop-full \
-    python-rosdep \
     && rosdep init  && rosdep update --rosdistro ${ROS_DISTRO} \
-    && rm -rf /var/lib/apt/lists/*
-    
+    && rm -rf /var/lib/apt/lists/* \
+    && sed -i 's/\/usr\/lib\/x86_64-linux-gnu\/qt4\/bin/\/usr\/lib\/x86_64-linux-gnu\/qt5\/bin/g' /usr/lib/x86_64-linux-gnu/qt-default/qtchooser/default.conf
+
 #Install tini
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
