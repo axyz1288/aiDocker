@@ -9,3 +9,6 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
 RUN pip3 install --no-cache-dir \
     pybullet \
     gym
+
+ENTRYPOINT [ "/usr/bin/tini", "--", "/ros_entrypoint.sh"]
+CMD [ "sleep", "infinity" ]

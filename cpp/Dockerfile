@@ -20,8 +20,11 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     libsdl2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/axyz1288/Joy.git /home/aiRobots/Joy \
-    && usermod -a -G dialout aiRobots
+RUN git clone https://github.com/axyz1288/Joy.git /home/${USERNAME}/Joy \
+    && chmod 777 -R /home/${USERNAME}/Joy \
+    && usermod -a -G dialout ${USERNAME}
     
-ENTRYPOINT [ "/usr/bin/tini", "--", "/ros_entrypoint.sh"]
-CMD [ "sleep", "infinity" ]
+COPY ./cpp_entrypoint.sh /
+RUN chmod a+x /cpp_entrypoint.sh
+ENTRYPOINT [ "/usr/bin/tini", "--", "/cpp_entrypoint.sh"]
+CMD [ "./build/Joy" ]
