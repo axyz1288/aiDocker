@@ -58,45 +58,45 @@ services:
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
 
-  # base:
-  #   build: ./python
-  #   image: axyz1288/python:3.6-cuda10.2
-  #   container_name: base
+  base:
+    build: ./python
+    image: axyz1288/python:3.6-cuda10.2
+    container_name: base
 
-  # pytorch:
-  #   build: 
-  #     context: ./pytorch
-  #   image: axyz1288/pytorch:python3.6-cuda10.2
-  #   user: aiRobots
-  #   runtime: nvidia
-  #   depends_on:
-  #     - base
-  #   container_name: pytorch
-  #   shm_size: '128gb'
-  #   ports:
-  #     - "1010:8888"
-  #     - "1011:6006"
-  #   volumes:
-  #     - ~/aiRobots/pytorch:/home/aiRobots
-  #   environment:
-  #     - "ROS_HOSTNAME=pytorch"
-  #     - "ROS_MASTER_URI=http://ros:11311"
+  pytorch:
+    build: 
+      context: ./pytorch
+    image: axyz1288/pytorch:python3.6-cuda10.2
+    user: aiRobots
+    runtime: nvidia
+    depends_on:
+      - base
+    container_name: pytorch
+    shm_size: '128gb'
+    ports:
+      - "1010:8888"
+      - "1011:6006"
+    volumes:
+      - ~/aiRobots/pytorch:/home/aiRobots
+    environment:
+      - "ROS_HOSTNAME=pytorch"
+      - "ROS_MASTER_URI=http://ros:11311"
 
-  # tensorflow:
-  #   build: 
-  #     context: ./tensorflow
-  #   image: axyz1288/tensorflow:python3.6-cuda10.2
-  #   user: aiRobots
-  #   runtime: nvidia
-  #   depends_on:
-  #     - base
-  #   container_name: tensorflow
-  #   shm_size: '128gb'
-  #   ports:
-  #     - "1020:8888"
-  #     - "1021:6006"
-  #   volumes:
-  #     - ~/aiRobots/tensorflow:/home/aiRobots
-  #   environment:
-  #     - "ROS_HOSTNAME=tensorflow"
-  #     - "ROS_MASTER_URI=http://ros:11311"
+  tensorflow:
+    build: 
+      context: ./tensorflow
+    image: axyz1288/tensorflow:python3.6-cuda10.2
+    user: aiRobots
+    runtime: nvidia
+    depends_on:
+      - base
+    container_name: tensorflow
+    shm_size: '128gb'
+    ports:
+      - "1020:8888"
+      - "1021:6006"
+    volumes:
+      - ~/aiRobots/tensorflow:/home/aiRobots
+    environment:
+      - "ROS_HOSTNAME=tensorflow"
+      - "ROS_MASTER_URI=http://ros:11311"
