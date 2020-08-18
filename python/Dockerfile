@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+FROM vistart/cuda:10.2-cudnn7-devel-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,7 +25,7 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     python3-pip \
     python3-setuptools\
     python3-dev \
-    ros-core \
+    ros-core-python-dev \
     && rm -rf /var/lib/apt/lists/*
     
 # Add user to group
@@ -53,6 +53,6 @@ ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["jupyter", "notebook", "--ip=0.0.0.0"]
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--NotebookApp.token=''", "--NotebookApp.password=''"]
 
 WORKDIR /home/${USERNAME}
