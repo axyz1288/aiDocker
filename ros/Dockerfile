@@ -1,4 +1,4 @@
-FROM nvidia/opengl:1.3-glvnd-runtime-ubuntu20.04
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu18.04
 
 ARG USERNAME=aiRobots
 ARG PASSWORD=aiRobots
@@ -10,7 +10,7 @@ ENV USERNAME=${USERNAME}
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-ENV ROS_DISTRO=noetic
+ENV ROS_DISTRO=melodic
 
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
     apt-utils 2>&1 \
@@ -45,6 +45,8 @@ RUN add-apt-repository "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc
     && apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 \
     && apt-get -y update && apt-get -y install --no-install-recommends \
     ros-${ROS_DISTRO}-desktop-full \
+    python-rosdep \
+    && rosdep init  && rosdep update --rosdistro ${ROS_DISTRO} \
     && rm -rf /var/lib/apt/lists/*
     
 #Install tini

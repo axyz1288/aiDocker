@@ -1,4 +1,4 @@
-FROM vistart/cuda:10.2-cudnn7-devel-ubuntu20.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -25,7 +25,7 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     python3-pip \
     python3-setuptools\
     python3-dev \
-    ros-core-python-dev \
+    ros-core \
     && rm -rf /var/lib/apt/lists/*
     
 # Add user to group
@@ -42,8 +42,7 @@ RUN pip3 install --upgrade pip --no-cache-dir \
     pandas \
     six==1.14.0 \
     matplotlib \
-    jupyterlab \
-    scikit-learn
+    jupyterlab
 
 EXPOSE 8888
 
