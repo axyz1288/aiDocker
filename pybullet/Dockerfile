@@ -1,4 +1,4 @@
-FROM axyz1288/ros:melodic
+FROM axyz1288/ros:noetic
 
 RUN apt-get -y update && apt-get -y install --no-install-recommends \
     python3-pip \

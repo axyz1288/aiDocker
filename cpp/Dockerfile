@@ -1,4 +1,4 @@
-FROM axyz1288/ros:melodic
+FROM axyz1288/ros:noetic
 
 # Install Xbox driver
 RUN apt-get -y update && apt-get -y install --no-install-recommends \

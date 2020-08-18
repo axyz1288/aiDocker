@@ -7,7 +7,7 @@ services:
 
   ros:
     build: ./ros
-    image: axyz1288/ros:melodic
+    image: axyz1288/ros:noetic
     runtime: nvidia
     user: aiRobots
     depends_on:
@@ -25,7 +25,7 @@ services:
 
   cpp:
     build: ./cpp
-    image: axyz1288/cpp:melodic
+    image: axyz1288/cpp:noetic
     runtime: nvidia
     user: aiRobots
     depends_on:
