@@ -65,13 +65,13 @@ services:
 
   base:
     build: ./python
-    image: axyz1288/python:3.6-cuda10.2
+    image: axyz1288/python:3.6-cuda11.0
     container_name: base
 
   pytorch:
     build: 
       context: ./pytorch
-    image: axyz1288/pytorch:python3.6-cuda10.2
+    image: axyz1288/pytorch:python3.6-cuda11.0
     user: aiRobots
     runtime: nvidia
     depends_on:
@@ -90,7 +90,7 @@ services:
   tensorflow:
     build: 
       context: ./tensorflow
-    image: axyz1288/tensorflow:python3.6-cuda10.2
+    image: axyz1288/tensorflow:python3.6-cuda11.0
     user: aiRobots
     runtime: nvidia
     depends_on:
