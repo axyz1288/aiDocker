@@ -52,7 +52,7 @@ ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 
-COPY ./ros_entrypoint.sh /
+RUN curl https://raw.githubusercontent.com/axyz1288/aiDocker/master/ros/ros_entrypoint.sh > /ros_entrypoint.sh
 RUN chmod a+x /ros_entrypoint.sh
 ENTRYPOINT ["/usr/bin/tini", "--", "/ros_entrypoint.sh"]
 CMD ["roscore"]
