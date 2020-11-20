@@ -16,7 +16,7 @@
 
 ## Ubuntu 20.04 (master)
 ```
-* opengl: 1.3
+* opengl: 1.2
 * cuda: 11.0
 * python: 3.8 (default)
 ```
