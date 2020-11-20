@@ -20,11 +20,9 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     libsdl2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/axyz1288/Joy.git /home/${USERNAME}/Joy \
-    && chmod 777 -R /home/${USERNAME}/Joy \
-    && usermod -a -G dialout ${USERNAME}
-    
-COPY ./cpp_entrypoint.sh /
-RUN chmod a+x /cpp_entrypoint.sh
-ENTRYPOINT [ "/usr/bin/tini", "--", "/cpp_entrypoint.sh"]
+# enable read write
+RUN usermod -a -G dialout ${USERNAME}
+
+RUN sed -n '10i/cd \home\${USERNAME}\Joy && catkin_make' /ros_entrypoint.sh
+ENTRYPOINT [ "/usr/bin/tini", "--", "/ros_entrypoint.sh"]
 CMD [ "./build/Joy" ]
