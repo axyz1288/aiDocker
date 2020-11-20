@@ -1,4 +1,4 @@
-FROM axyz1288/ros:noetic
+FROM axyz1288/aidocker:ros
 
 # Install Xbox driver
 RUN apt-get -y update && apt-get -y install --no-install-recommends \

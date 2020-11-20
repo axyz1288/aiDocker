@@ -2,7 +2,7 @@ version: '2.3'
 services:
   ros:
     build: ./ros
-    image: axyz1288/ros:noetic
+    image: axyz1288/aidocker:ros
     runtime: nvidia
     user: aiRobots
     container_name: ros
@@ -18,7 +18,7 @@ services:
 
   cpp:
     build: ./cpp
-    image: axyz1288/cpp:noetic
+    image: axyz1288/aidocker:cpp
     runtime: nvidia
     user: aiRobots
     depends_on:
@@ -39,7 +39,7 @@ services:
 
   pybullet:
     build: ./pybullet
-    image: axyz1288/pybullet
+    image: axyz1288/aidocker:pybullet
     container_name: pybullet
     user: aiRobots
     runtime: nvidia
@@ -58,18 +58,17 @@ services:
 
   base:
     build: ./python
-    image: axyz1288/python:3.8-cuda11.0
+    image: axyz1288/aidocker:python
     container_name: base
 
   pytorch:
-    build: 
-      context: ./pytorch
-    image: axyz1288/pytorch:cuda11.0
+    build: ./pytorch
+    image: axyz1288/aidocker:pytorch
+    container_name: pytorch
     user: aiRobots
     runtime: nvidia
     depends_on:
       - base
-    container_name: pytorch
     shm_size: '128gb'
     ports:
       - "1010:8888"
@@ -81,14 +80,13 @@ services:
       - "ROS_MASTER_URI=http://ros:11311"
 
   tensorflow:
-    build: 
-      context: ./tensorflow
-    image: axyz1288/tensorflow:cuda11.0
+    build: ./tensorflow
+    image: axyz1288/aidocker:tensorflow
+    container_name: tensorflow
     user: aiRobots
     runtime: nvidia
     depends_on:
       - base
-    container_name: tensorflow
     shm_size: '128gb'
     ports:
       - "1020:8888"

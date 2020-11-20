@@ -1,4 +1,4 @@
-FROM axyz1288/python:3.8-cuda11.0
+FROM axyz1288/aidocker:python
 
 # install tensorflow
 RUN python3 -m pip install --no-cache-dir \ 
