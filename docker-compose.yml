@@ -2,7 +2,6 @@ version: '2.3'
 services:
   ros:
     build: ./ros
-    depends_on: [opengl]
     image: axyz1288/aidocker:ros
     container_name: ros
     runtime: nvidia
