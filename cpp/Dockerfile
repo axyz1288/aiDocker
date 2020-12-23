@@ -22,7 +22,6 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
 
 # enable read write
 RUN usermod -a -G dialout ${USERNAME}
-
-RUN sed -n '10i/cd \home\${USERNAME}\Joy && catkin_make' /ros_entrypoint.sh
+RUN sed -i '10 i cd /home/${USERNAME}/Joy && catkin_make' /ros_entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/ros_entrypoint.sh"]
 CMD [ "./build/Joy" ]
