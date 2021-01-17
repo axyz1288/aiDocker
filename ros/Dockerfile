@@ -26,6 +26,8 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     cmake \
     git \
     build-essential \
+    dirmngr \
+    gpg-agent \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F42ED6FBAB17C654
