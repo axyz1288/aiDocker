@@ -22,8 +22,7 @@ RUN apt-get -y update && apt-get -y install --no-install-recommends \
     libsdl2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/axyz1288/New_May /home/aiRobots/New_May \
-    && usermod -a -G dialout aiRobots
+RUN usermod -a -G dialout ${USERNAME}
 
 ENTRYPOINT ["/usr/bin/tini-arm64", "--", "/ros_entrypoint.sh"]
 CMD [ "sleep", "infinity" ]
