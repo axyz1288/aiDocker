@@ -2,10 +2,10 @@ version: '2.3'
 services:
   ros:
     build: ./ros
-    image: axyz1288/ros:melodic
+    image: axyz1288/aidocker:ros
+    container_name: ros
     runtime: nvidia
     user: aiRobots
-    container_name: ros
     volumes:
       - ~/aiRobots/ros:/home/aiRobots
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
@@ -15,15 +15,14 @@ services:
       - "DISPLAY=$DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
-    
+
   cpp:
     build: ./cpp
-    image: axyz1288/cpp:melodic
+    depends_on: [ros]
+    image: axyz1288/aidocker:cpp
+    container_name: cpp
     runtime: nvidia
     user: aiRobots
-    depends_on:
-      - ros
-    container_name: cpp
     privileged: true
     volumes:
       - ~/aiRobots/cpp:/home/aiRobots
@@ -36,46 +35,42 @@ services:
       - "DISPLAY=$DISPLAY"
       - "QT_X11_NO_MITSHM=1"
       - "XAUTHORITY=/tmp/.docker.xauth"
-
   base:
     build: ./python
-    image: axyz1288/python:3.6-cuda10.1
-    container_name: base
-    
+    image: axyz1288/aidocker:python
+    container_name: python
+
   pytorch:
-    build: 
-      context: ./pytorch
-      shm_size: '128gb'
-    image: axyz1288/pytorch:python3.6-cuda10.1
-    user: aiRobots
-    runtime: nvidia
-    depends_on:
-      - base
+    build: ./pytorch
+    depends_on: [base]
+    image: axyz1288/aidocker:pytorch
     container_name: pytorch
+    runtime: nvidia
+    user: aiRobots
+    shm_size: '128gb'
     ports:
-      - "1000:8888"
-      - "1001:6006"
+      - "1010:8888"
+      - "1011:6006"
     volumes:
       - ~/aiRobots/pytorch:/home/aiRobots
     environment:
       - "ROS_HOSTNAME=pytorch"
       - "ROS_MASTER_URI=http://ros:11311"
-  
-  tensorflow:
-    build: 
-      context: ./tensorflow
-      shm_size: '128gb'
-    image: axyz1288/tensorflow:python3.6-cuda10.1
-    user: aiRobots
-    runtime: nvidia
-    depends_on:
-      - base
-    container_name: tensorflow
-    ports:
-      - "1010:8888"
-      - "1011:6006"
-    volumes:
-      - ~/aiRobots/tensorflow:/home/aiRobots
-    environment:
-      - "ROS_HOSTNAME=tensorflow"
-      - "ROS_MASTER_URI=http://ros:11311"
+
+  # Not support cuda 11.0
+  # tensorflow:
+  #   build: ./tensorflow
+  #   depends_on: [base]
+  #   image: axyz1288/aidocker:tensorflow
+  #   container_name: tensorflow
+  #   runtime: nvidia
+  #   user: aiRobots
+  #   shm_size: '128gb'
+  #   ports:
+  #     - "1020:8888"
+  #     - "1021:6006"
+  #   volumes:
+  #     - ~/aiRobots/tensorflow:/home/aiRobots
+  #   environment:
+  #     - "ROS_HOSTNAME=tensorflow"
+  #     - "ROS_MASTER_URI=http://ros:11311"
